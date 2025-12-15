@@ -142,8 +142,8 @@ With this approach, the following features are supported:
 - **Maintainability:** Adding new actions or keys shouldn’t break old configs.
 - **Upgradeability:** Users can partially override configs, even as your keybindings evolve.
 - **Multiple Shortcuts:** Map several key combos to a single action.
-- **Backward Compatibility:** it can always compatible with legacy config, if we only make addition
-  on the Enum.
+- **Backward Compatibility:** It can always be compatible with legacy configs, if we only make
+  additions to the Enum.
 - **Better User Experience:** Power users and international users can adjust keyboard layouts as
   needed.
 
@@ -177,7 +177,7 @@ enum. The following guide helps you complete the migration without issues.
   - If `KeyCode` and `KeyModifiers` are not directly used, and are managed by the KeyBind enum
 - Allow users to customize the keybind
   - Save the key config to disk with `AppEvent::to_toml_example("keybind.toml")`
-  - Use `AppEvent::init_and_load("keybind.toml")?` first
+  - Then use `AppEvent::init_and_load("keybind.toml")?` to load the customized config
 
 ## Extras: A starter template
 
