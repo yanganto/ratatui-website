@@ -23,7 +23,7 @@ keybinds to remain compatible across updates.
 ## From Scratch First
 
 There may be more possible ways to solve this problem, and most problems can be solved by an intermediate abstraction layer.
-Meanwhile, configurable keybindings is one of the problems.
+Meanwhile, configurable keybindings are one of the problems.
 The abstraction layer is possibly a module or a struct/enum with a set of functions, or more.
 
 Within this abstraction, other functions/handlers are not directly comparing the raw key events, which are the user's key strikes.
@@ -41,10 +41,10 @@ With a file-based input, users can easily use different key bindings for differe
 
 However, user inputs are fragile and hard to trust, and frequently checking the config file on disk is not efficient.
 So we normally need another function in the abstraction layer to read the file from disk and deserialize it into memory.
-This way we can normalize and report possible malformed user input at first, while the previous function does comparison in memory in an efficient way.
+This way we can normalize and report possible malformed user input at first, while the previous function performs comparison in memory in an efficient way.
 
-With good handling of user input parsing, error handling, and event comparison in these two functions,
-you can complete a configurable keybindings feature for a TUI app using an abstraction layer with 2 functions in a 0-dependency way.
+With good handling of user input parsing, error handling, and event comparison in these two functions (one for config parsing and one for event matching),
+you can complete a configurable keybindings feature for a TUI app in a 0-dependency way.
 However, keybinding issues involve more than just these concerns, so we encourage you to read more and develop the best solution for your needs.
 
 ## Design and Constraints
