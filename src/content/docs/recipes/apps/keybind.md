@@ -65,27 +65,28 @@ struct Config {
 }
 ```
 
-The different are `crossterm-keybind` use attribute macros to declare default 
-shortcuts, and support external TOML configuration for overrides and patches.
+The difference is that `crossterm-keybind` uses attribute macros to declare default shortcuts and
+supports external TOML configuration for overrides and patches.
 
-And the `keybinds-rs` leave default keybing untouched, developers can
-additionally provided it from any deserilaized crates.
+On the other hand, `keybinds-rs` leaves default keybinding definitions flexible, allowing developers
+to provide them through any deserialization approach they prefer.
 
 #### How to capture a user input
 
 Within an abstraction, the enum, you don't want to directly compare the `KeyCode`, `KeyModifiers` of
 a `crossterm::KeyEvent` when capturing a user's input. Instead, you can pass a reference of it to a
-`match_any` method with `crossterm-keybind` or `dispatch` from `keybind-rs`, which can be provided 
-by the derive macro. Before you match any keyevent, you should initialize first keybind instanace 
-for your app first, because it is possible for your users to have customized keybinds (this will be
-explained in the next section). 
+`match_any` method with `crossterm-keybind` or `dispatch` from `keybind-rs`, which can be provided
+by the derive macro. Before you match any keyevent, you should initialize a keybind instance for
+your app first, because it is possible for your users to have customized keybinds (this will be
+explained in the next section).
 
-- `crossterm-keybind` use `KeyEvent::init_and_load(...)`
-- `keybind-rs` need developer construct instance by serialer
+- `crossterm-keybind` uses `KeyEvent::init_and_load(...)`
+- `keybind-rs` needs developers to construct the instance via a deserializer
 
-Normally, you can run initalization as the first task of the main function.
+Normally, you can run initialization as the first task of the main function.
 
 _The Example from crossterm-keybind:_
+
 ```rust
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     KeyEvent::init_and_load(None)?;
@@ -100,7 +101,8 @@ if KeyBindEvent::Quit.match_any(&key) {
 }
 ```
 
-_The Example from keybinds-rs:_ 
+_The Example from keybinds-rs:_
+
 ```rust
     // Parse the configuration from the file content
     let config: Config = toml::from_str(CONFIG_FILE_CONTENT).unwrap();
@@ -109,7 +111,6 @@ _The Example from keybinds-rs:_
     // dispatches the corresponding actions.
     let mut keybinds = config.keyboard;
 ```
-
 
 ```rust
   if let Some(action) = keybinds.dispatch(&event) {
@@ -131,12 +132,13 @@ _The Example from keybinds-rs:_
 
 The ways to customize keybinding will different between two crates.
 
-
 **The crossterm-keybind way**
 
-Crossterm additionally take care about 
-- overrides issue, the feature rely on sturct-patch, which is using from [gitui](https://github.com/gitui-org/gitui)
-- the documentation of config file, which is used from [kld](https://github.com/kuutamolabs/kld)
+Crossterm additionally takes care of:
+
+- Override issues using the struct-patch feature, which is borrowed from
+  [gitui](https://github.com/gitui-org/gitui)
+- Config file documentation, which is adapted from [kld](https://github.com/kuutamolabs/kld)
 
 The KeyBind macro can also provide a key config example file for users, so they can easily customize
 their keybinds.
@@ -187,13 +189,14 @@ remain the same as the default, because the user did not customize them, so the 
 `F1` or `?` to open the widget. You also get the benefit of backward compatibility for key configs,
 if you only make additions to the key binding enum.
 
-
 **The keybind-rs way**
 
-Developer can provide more sets of keybindings in the config file.  And the keybinds to the enum
-can be multiple to one.  And the configure can be in a keyboard section of your main configure.
+Developers can provide multiple sets of keybindings in the config file. The keybinds to the enum can
+be many-to-one (multiple keybinds mapping to the same action). The keyboard configuration can be
+part of your main config file.
 
 _The Example Content of User's Config:_
+
 ```toml
 const CONFIG_FILE_CONTENT: &str = r#"
 [keyboard]
@@ -214,11 +217,10 @@ const CONFIG_FILE_CONTENT: &str = r#"
 "#;
 ```
 
-#### How can user know current key
+#### How can users know the current keybindings
 
-When the TUI application allows customized keybindings, it's helpful to hint to users what the
-current key binding is. `crossterm-keybind` considered this topic, so you can use 
-`key_bindings_display()` for the purpose.
+When the TUI application allows customized keybindings, it's helpful to show users what the current
+keybindings are. `crossterm-keybind` provides a `key_bindings_display()` method for this purpose.
 
 ```
 println!(
@@ -229,35 +231,40 @@ println!(
 
 ### Summary
 
-With these approach, the following features are supported:
+With these approaches, the following features are supported:
 
-Both crates support
-  - **User Customization:** Let users adapt the app to their muscle memory and workflows.
-  - **Multiple Shortcuts:** Map several key combos to a single action.
-  - **Better User Experience:** Power users and international users can adjust keyboard layouts as
+Both crates support:
 
-crossterm-keybind support
-  - **Maintainability:** Adding new actions or keys shouldn’t break old configs.
-  - **Upgradeability:** Users can partially override configs, even as your keybindings evolve. 
-  - **Backward Compatibility:** It can always be compatible with legacy configs, if we only make
-    additions to the Enum.
+- **User Customization:** Let users adapt the app to their muscle memory and workflows.
+- **Multiple Shortcuts:** Map several key combos to a single action.
+- **Better User Experience:** Power users and international users can adjust keyboard layouts.
 
-keybind-rs supported
-  - **Embeded Config:** Keyboard can be part of config
-  - **Customizable Deserialize:** Customizable deserializer for the config
+crossterm-keybind supports:
 
-There are some constraints with this approach you need to know ahead of time:
+- **Maintainability:** Adding new actions or keys shouldn’t break old configs.
+- **Upgradeability:** Users can partially override configs, even as your keybindings evolve.
+- **Backward Compatibility:** It can always be compatible with legacy configs, if we only make
+  additions to the Enum.
 
-Both crates constraints
-  - Always use the enum for new key bindings; do not directly handle keycode in functions
-  - Using macros will slightly increase compiling time, but this is not easy to detect with modern
-    computers.
+keybind-rs supports:
 
-crossterm-keybind constraints
-  - Only make additions to the enum to keep keybind config backward compatibility.
+- **Embedded Config:** Keyboard can be part of the main config.
+- **Customizable Deserialization:** Customizable deserializer for the config.
 
-It's also possible to use `crossterm-keybind-core` alone to achieve a similar
-approach with a different pattern.
+There are some constraints with these approaches you need to know ahead of time:
+
+Both crates have constraints:
+
+- Always use the enum for new key bindings; do not directly handle keycode in functions.
+- Using macros will slightly increase compile time, but this is not easy to detect with modern
+  computers.
+
+crossterm-keybind constraints:
+
+- Only make additions to the enum to keep keybind config backward compatibility.
+
+It's also possible to use `crossterm-keybind-core` alone to achieve a similar approach with a
+different pattern.
 
 ## Migration guide for existing applications
 
@@ -269,30 +276,33 @@ enum. The following guide helps you complete the migration without issues.
     `KeyEvent`.
   - (crossterm-keybind) Use `AppEvent::init_and_load(None)?` first
   - (keybind-rs) Add deserializer for your config
-- (Both) Gradually move crossterm::KeyEvent into the `match_any`(crossterm-keybind) or `dispatch`(keybind-rs) of the enum
+- (Both) Gradually move crossterm::KeyEvent into the `match_any` (crossterm-keybind) or `dispatch`
+  (keybind-rs) of the enum
   - Normally the condition will change from `match` arms to `if` arms in this step
   - A simple search for `KeyCode`, `KeyModifiers` is good enough rather than searching for
     `KeyEvent`
-- (Both) Make sure `crossterm::KeyCode` or `crossterm::KeyModifiers` are not being used in your project
+- (Both) Make sure `crossterm::KeyCode` or `crossterm::KeyModifiers` are not being used in your
+  project
   - If `KeyCode` and `KeyModifiers` are not directly used, and are managed by the KeyBind enum
--  Allow users to customize the keybind
+- Allow users to customize the keybind
   - (crossterm-keybind) Save the key config to disk with `AppEvent::to_toml_example("keybind.toml")`
-  - (crossterm-keybind) Then use `AppEvent::init_and_load("keybind.toml")?` to load the customized config
-  - (keybind-rs) Mannually provide example for keybind
+  - (crossterm-keybind) Then use `AppEvent::init_and_load("keybind.toml")?` to load the customized
+    config
+  - (keybind-rs) Manually provide example for keybind
 
 ## Extras: starter templates
 
 If you want a ready-made starting point that applies these ideas, here's a template that puts it all
 together.
 
-### Option 1. Using GitHub Templatea for crossterm-keybind
+### Option 1. Using GitHub Template for crossterm-keybind
 
 Click the top-left green `Use this template` button of
 [ratatui-keybind-template](https://github.com/yanganto/ratatui-keybind-template).
 
 Set up your project name.
 
-or simple clone the project 
+or simply clone the project
 
 ```bash
 git clone https://github.com/yanganto/ratatui-keybind-template.git
