@@ -93,6 +93,19 @@ if KeyBindEvent::Quit.match_any(&key) {
   // Show documents
 }
 ```
+or
+```rust
+for event in KeyBindEvent::dispatch(&key) {
+  match event {
+    KeyBindEvent::Quit => {
+      // Close the app
+    },
+    KeyBindEvent::ShowHelp => {
+      // Show documents
+    },
+  }
+}
+```
 
 _The Example from keybinds-rs:_
 
@@ -175,6 +188,8 @@ remain the same as the default, because the user did not customize them, so the 
 `F1` or `?` to open the widget. You also get the benefit of backward compatibility for key configs,
 if you only make additions to the key binding enum.
 
+It is possible to let a keybind trigger more than one enum types.
+
 **The keybind-rs way**
 
 Developers can provide multiple sets of keybindings in the config file. The keybinds to the enum can
@@ -199,6 +214,8 @@ const CONFIG_FILE_CONTENT: &str = r#"
 "Esc" = "Exit"
 "#;
 ```
+
+Every keybind will bind to one enum type.
 
 #### How can users know the current keybindings
 
