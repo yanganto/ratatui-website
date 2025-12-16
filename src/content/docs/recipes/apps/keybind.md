@@ -23,8 +23,8 @@ keybinds to remain compatible across updates.
 ## From Scratch First
 
 There may be more possible ways to solve this problem, and most problems can be solved by an intermediate abstraction layer.
-Meanwhile, configurable keybindings are one of the problems.
-The abstraction layer is possibly a module or a struct/enum with a set of functions, or more.
+Configurable keybindings are one such problem that benefits from this approach.
+The abstraction layer could be a module, a struct/enum with a set of functions, or a combination of these.
 
 Within this abstraction, other functions/handlers are not directly comparing the raw key events, which are the user's key strikes.
 They just pass the raw event to the abstraction layer, and then the layer, based on the user's key strikes,
