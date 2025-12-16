@@ -249,7 +249,7 @@ crossterm-keybind supports:
 keybind-rs supports:
 
 - **Embedded Config:** Keyboard can be part of the main config.
-- **Customizable Deserialize:** Customizable deserializer for the config.
+- **Customizable Deserialization:** Customizable deserializer for the config.
 
 There are some constraints with these approaches you need to know ahead of time:
 
