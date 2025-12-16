@@ -20,11 +20,39 @@ keybinding schemes (like vim-style bindings or personalized shortcuts). Manually
 requests quickly becomes a maintenance burden, and as your app evolves, users expect their custom
 keybinds to remain compatible across updates.
 
+## From Scratch First
+
+There maybe more possible way to solve this problem, and most problems can be solve by an intermediate abstraction layer.
+Meanwhile, the configurable keybindings is one of the problems.
+The abstraction layer is possible a moodule or a struct/enum with a set of functions, or more.
+
+Within abstraction, other functions/handlers are not directly comparing the raw key events, which is the user's key striks.
+They just pass the raw event to the abstraction layer, and then the layer base on user's key striks, 
+excute the corresponding functions or return back a _event token_, let other function know how to handle it.
+
+As you can image, one of functions in the abstraction layer will read the user key striks, and read a config file in disk like following, then findout the user's meaning.
+```text
+...
+Control+c -> Close the app
+...
+```
+
+With a file based input, user can easily use different key bindings for differnt actions.
+
+However, user's inputs are fragile and hard to trust, and frequently check the config file in disk is not clever.
+So we normally need another function in the abstraction layer to read the file from disk, deserialization into memory.
+Such that we can normalize and report possible malforamt of user input at first, the previous function also do comparing in memory in a efficent way.
+
+With well handle on user inputs parsing, error handling, event comparing in these two function,
+you can easily complete a configurable keybindings feature for tui app in an abstraction layer with 2 functions in a 0-dependency way.
+However, the keybindings issues are still more than these, we encourage to read more and have a best solution from your end.
+
 ## Design and Constraints
+Following examples are with an idea to define all keybindings in _a single enum_, in which the _evnet tokens_ in previous section are the enum variants,
+and we do not say the way using enum is always the best practice.
+There are just some suggestions and solutions for you to solve keybind related problems ahead.
 
 ### Core Pattern
-
-The main idea is to define all keybindings in _a single enum_.
 
 _The Enum Example from crossterm-keybind:_
 
@@ -86,6 +114,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
+In less comparing way
 ```rust
 if KeyBindEvent::Quit.match_any(&key) {
   // Close the app
@@ -94,7 +123,7 @@ if KeyBindEvent::Quit.match_any(&key) {
 }
 ```
 
-or
+or use dispatch in a full comparing way to get all possilbe enum variants
 
 ```rust
 for event in KeyBindEvent::dispatch(&key) {
