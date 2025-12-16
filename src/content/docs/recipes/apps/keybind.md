@@ -11,7 +11,7 @@ This recipe explores how to add customizable, user-driven keybindings to your Ra
 It covers common approaches for managing keybindings, supporting user configuration, and maintaining
 backward compatibility as your application evolves. Concrete implementations using the
 [`crossterm-keybind`](https://github.com/yanganto/crossterm-keybind) or
-[`keybind-rs`](https://github.com/rhysd/keybinds-rs) are presented as example.
+[`keybind-rs`](https://github.com/rhysd/keybinds-rs) are presented as examples.
 
 ## Problem statement and motivation
 
@@ -37,7 +37,7 @@ pub enum KeyEvent {
     #[keybindings["Control+c", "Q", "q"]]
     Quit,
 
-    /// Toggle to open/close a widget show all the commands
+    /// Toggle to open/close a widget showing all the commands
     #[keybindings["h", "F1"]]
     ShowHelp,
 }
@@ -64,7 +64,7 @@ supports external TOML configuration for overrides and patches.
 On the other hand, `keybinds-rs` leaves default keybinding definitions flexible, allowing developers
 to provide them through any deserialization approach they prefer.
 
-#### How to capture a user input
+#### How to capture user input
 
 Within an abstraction, the enum, you don't want to directly compare the `KeyCode`, `KeyModifiers` of
 a `crossterm::KeyEvent` when capturing a user's input. Instead, you can pass a reference of it to a
@@ -93,7 +93,9 @@ if KeyBindEvent::Quit.match_any(&key) {
   // Show documents
 }
 ```
+
 or
+
 ```rust
 for event in KeyBindEvent::dispatch(&key) {
   match event {
@@ -127,9 +129,9 @@ _The Example from keybinds-rs:_
   }
 ```
 
-#### How can user customize their keybinds
+#### How can users customize their keybinds
 
-The ways to customize keybinding will different between two crates.
+The ways to customize keybindings differ between the two crates.
 
 **The crossterm-keybind way**
 
@@ -159,8 +161,8 @@ _The crossterm-keybind Config Content Example_
 # Close the application
 quit = ["Control+c", "Q", "q"]
 
-# Toggle to open/close a widget show all the commands
-toggle_help_widget = ["F1", "?"]
+# Toggle to open/close a widget showing all the commands
+show_help = ["h", "F1"]
 ```
 
 As you can see, the documentation of the enum will also be included in the config files, so you
@@ -188,7 +190,7 @@ remain the same as the default, because the user did not customize them, so the 
 `F1` or `?` to open the widget. You also get the benefit of backward compatibility for key configs,
 if you only make additions to the key binding enum.
 
-It is possible to let a keybind trigger more than one enum types.
+It is possible to let a keybind trigger more than one enum variant.
 
 **The keybind-rs way**
 
@@ -215,14 +217,14 @@ const CONFIG_FILE_CONTENT: &str = r#"
 "#;
 ```
 
-Every keybind will bind to one enum type.
+Every keybind binds to one enum variant.
 
 #### How can users know the current keybindings
 
 When the TUI application allows customized keybindings, it's helpful to show users what the current
 keybindings are. `crossterm-keybind` provides a `key_bindings_display()` method for this purpose.
 
-```
+```rust
 println!(
     "type {} for help",
     KeyEvent::ShowHelp.key_bindings_display()
@@ -281,9 +283,9 @@ enum. The following guide helps you complete the migration without issues.
   - Normally the condition will change from `match` arms to `if` arms in this step
   - A simple search for `KeyCode`, `KeyModifiers` is good enough rather than searching for
     `KeyEvent`
-- (Both) Make sure `crossterm::KeyCode` or `crossterm::KeyModifiers` are not being used in your
-  project
-  - If `KeyCode` and `KeyModifiers` are not directly used, and are managed by the KeyBind enum
+- (Both) Make sure `crossterm::KeyCode` or `crossterm::KeyModifiers` are not being used directly in
+  your project
+  - Verify that `KeyCode` and `KeyModifiers` are managed through the KeyBind enum
 - Allow users to customize the keybind
   - (crossterm-keybind) Save the key config to disk with `AppEvent::to_toml_example("keybind.toml")`
   - (crossterm-keybind) Then use `AppEvent::init_and_load("keybind.toml")?` to load the customized
