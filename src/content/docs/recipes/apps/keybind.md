@@ -243,10 +243,11 @@ Both crates support:
 
 crossterm-keybind supports:
 
-- **Maintainability:** Adding new actions or keys shouldn’t break old configs.
-- **Upgradeability:** Users can partially override configs, even as your keybindings evolve.
 - **Backward Compatibility:** It can always be compatible with legacy configs, if we only make
   additions to the Enum.
+- **Maintainability:** It is easy to a keybind config updated with the code.
+- **Better Developer Experience:** Easy to setup default keybindings.
+- **Flexible Keybindings:** It is possible to trigger mulitple enum type from one keybinding.
 
 keybind-rs supports:
 
@@ -264,6 +265,10 @@ Both crates have constraints:
 crossterm-keybind constraints:
 
 - Only make additions to the enum to keep keybind config backward compatibility.
+
+keybind-rs constraints:
+
+- One keybind only trigger one enum type.
 
 It's also possible to use `crossterm-keybind-core` alone to achieve a similar approach with a
 different pattern.
