@@ -22,35 +22,35 @@ keybinds to remain compatible across updates.
 
 ## From Scratch First
 
-There maybe more possible way to solve this problem, and most problems can be solve by an intermediate abstraction layer.
-Meanwhile, the configurable keybindings is one of the problems.
-The abstraction layer is possible a moodule or a struct/enum with a set of functions, or more.
+There may be more possible ways to solve this problem, and most problems can be solved by an intermediate abstraction layer.
+Configurable keybindings are one such problem that benefits from this approach.
+The abstraction layer could be a module, a struct/enum with a set of functions, or a combination of these.
 
-Within abstraction, other functions/handlers are not directly comparing the raw key events, which is the user's key striks.
-They just pass the raw event to the abstraction layer, and then the layer base on user's key striks, 
-excute the corresponding functions or return back a _event token_, let other function know how to handle it.
+Within this abstraction, other functions/handlers are not directly comparing the raw key events, which are the user's key strikes.
+They just pass the raw event to the abstraction layer, and then the layer, based on the user's key strikes,
+executes the corresponding functions or returns back an _event token_ to let other functions know how to handle it.
 
-As you can image, one of functions in the abstraction layer will read the user key striks, and read a config file in disk like following, then findout the user's meaning.
+As you can imagine, one of the functions in the abstraction layer will read the user's key strikes, and read a config file on disk like the following, then find out the user's meaning.
 ```text
 ...
 Control+c -> Close the app
 ...
 ```
 
-With a file based input, user can easily use different key bindings for differnt actions.
+With a file-based input, users can easily use different key bindings for different actions.
 
-However, user's inputs are fragile and hard to trust, and frequently check the config file in disk is not clever.
-So we normally need another function in the abstraction layer to read the file from disk, deserialization into memory.
-Such that we can normalize and report possible malforamt of user input at first, the previous function also do comparing in memory in a efficent way.
+However, user inputs are fragile and hard to trust, and frequently checking the config file on disk is not efficient.
+So we normally need another function in the abstraction layer to read the file from disk and deserialize it into memory.
+This way we can normalize and report possible malformed user input at first, while the previous function performs comparison in memory in an efficient way.
 
-With well handle on user inputs parsing, error handling, event comparing in these two function,
-you can easily complete a configurable keybindings feature for tui app in an abstraction layer with 2 functions in a 0-dependency way.
-However, the keybindings issues are still more than these, we encourage to read more and have a best solution from your end.
+With good handling of user input parsing, error handling, and event comparison in these two functions (one for config parsing and one for event matching),
+you can complete a configurable keybindings feature for a TUI app in a 0-dependency way.
+However, keybinding issues involve more than just these concerns, so we encourage you to read more and develop the best solution for your needs.
 
 ## Design and Constraints
-Following examples are with an idea to define all keybindings in _a single enum_, in which the _evnet tokens_ in previous section are the enum variants,
-and we do not say the way using enum is always the best practice.
-There are just some suggestions and solutions for you to solve keybind related problems ahead.
+The following examples use an approach that defines all keybindings in _a single enum_, in which the _event tokens_ from the previous section are the enum variants.
+We are not saying that using an enum is always the best practice.
+These are just some suggestions and solutions for you to solve keybind-related problems ahead.
 
 ### Core Pattern
 
