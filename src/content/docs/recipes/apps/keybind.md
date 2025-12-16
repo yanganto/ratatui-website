@@ -245,9 +245,9 @@ crossterm-keybind supports:
 
 - **Backward Compatibility:** It can always be compatible with legacy configs, if we only make
   additions to the Enum.
-- **Maintainability:** It is easy to a keybind config updated with the code.
+- **Maintainability:** It is easy to keep a keybind config updated with the code.
 - **Better Developer Experience:** Easy to setup default keybindings.
-- **Flexible Keybindings:** It is possible to trigger mulitple enum type from one keybinding.
+- **Flexible Keybindings:** It is possible to trigger multiple enum variants from one keybinding.
 
 keybind-rs supports:
 
@@ -268,7 +268,7 @@ crossterm-keybind constraints:
 
 keybind-rs constraints:
 
-- One keybind only trigger one enum type.
+- One keybind can only trigger one enum variant.
 
 It's also possible to use `crossterm-keybind-core` alone to achieve a similar approach with a
 different pattern.
