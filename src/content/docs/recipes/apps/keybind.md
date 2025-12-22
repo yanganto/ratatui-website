@@ -9,10 +9,9 @@ sidebar:
 
 This recipe explores how to add customizable, user-driven keybindings to your Ratatui application.
 It covers common approaches for managing keybindings, supporting user configuration, and maintaining
-backward compatibility as your application evolves.  We provide a design pattern here, concrete 
-implementations using the
-[`crossterm-keybind`](https://github.com/yanganto/crossterm-keybind) or
-[`keybind-rs`](https://github.com/rhysd/keybinds-rs) are presented as examples, and also a general 
+backward compatibility as your application evolves. We provide a design pattern here, concrete
+implementations using the [`crossterm-keybind`](https://github.com/yanganto/crossterm-keybind) or
+[`keybind-rs`](https://github.com/rhysd/keybinds-rs) are presented as examples, and also a general
 migration guide for an existing tui project.
 
 ## Problem & motivation
@@ -43,9 +42,11 @@ from disk and deserialize it into memory. This way we can normalize and report p
 user input at first, while the previous function performs comparison in memory in an efficient way.
 
 ## Minimal abstraction (no crates)
+
 First, a user provide a file input to the program know keybinds are using for different intention.
 
-_keybind.txt_ - this file is possible in anykind of format or ording, here is just an example
+_keybind.txt_ - this file is possible in anykind of format or ordering, here is just an example
+
 ```text
 ...
 Control+c -> Close the app
@@ -72,9 +73,10 @@ fn known_from_user_strikes(key: crossterm::KeyEvent) -> String {
 }
 ```
 
-With a file-based input, users can easily use different key bindings for different actions.
-As we mentioned befored, preloading the config file can report error earlier and in a better efficient way.
-Following are a simple pseudo code for loading the config, and we can a simple str for the _event token_.
+With a file-based input, users can easily use different key bindings for different actions. As we
+mentioned befored, preloading the config file can report error earlier and in a better efficient
+way. Following are a simple pseudo code for loading the config, and we can a simple str for the
+_event token_.
 
 ```rust
 // keybind.rs
@@ -101,11 +103,13 @@ needs.
 
 The following examples use an approach that defines all keybindings in _a single enum_, in which the
 _event tokens_ from the previous section are the enum variants. We are not saying that using an enum
-is always the best practice, and some [discussion](https://github.com/ratatui/ratatui/discussions/627) 
-about using a struct as the _event token_. Here are some concrete implementations with more detail 
-solutions for you to solve keybind-related problems ahead.
+is always the best practice, and some
+[discussion](https://github.com/ratatui/ratatui/discussions/627) about using a struct as the _event
+token_. Here are some concrete implementations with more detail solutions for you to solve
+keybind-related problems ahead.
 
 ## Concrete implementations (crates as examples)
+
 ### Crossterm-keybind
 
 ```rust
@@ -171,7 +175,7 @@ third party crates are listed in the following, making it easier for you to find
 - **Keybind Hint(crossterm-keybind):** easier to know what the current keybind is.
 - **Embedded Config(keybind-rs):** Keyboard can be part of the main config.
 - **Customizable Deserialization(keybind-rs):** Customizable deserializer for the config.
-- **Emac-style(keybind-rs):** Using Emac style keybinds and map multiple key strikes to an event.
+- **Emacs-style(keybind-rs):** Using Emacs style keybinds and map multiple key strikes to an event.
 
 There are some constraints with these approaches you need to know ahead of time:
 
@@ -181,9 +185,9 @@ There are some constraints with these approaches you need to know ahead of time:
 - Only make additions to the enum to keep keybind config backward compatibility (crossterm-keybind).
 - One keybind can only trigger one enum variant (keybind-rs).
 
-`crossterm-keybind` is a crate opened to used with features with less codding, and it's still 
-possible to use `crossterm-keybind-core` alone to achieve a different approach.
-On the other hand, `keybind-rs` is a ligh weight intended crate.
+`crossterm-keybind` is a crate opened to used with features with less codding, and it's still
+possible to use `crossterm-keybind-core` alone to achieve a different approach. On the other hand,
+`keybind-rs` is a lightweight intended crate.
 
 ## Migration guide
 
